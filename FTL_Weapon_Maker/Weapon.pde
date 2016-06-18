@@ -1,10 +1,14 @@
 class Weapon {
+  
+  XML weaponBlueprint; // Main blueprint tag
 
-  XML weaponBlueprint;
-  
   Weapon(String name) {
-    weaponBlueprint = ;
-    //weaponBlueprint = parseXML("<weaponBlueprint name=\"" + name + "\"></weaponBlueprint>");
+    weaponBlueprint = parseXML("<weaponBlueprint name=\"" + name + "\"></weaponBlueprint>" );
+    
+    println("Successfully created " + name + " weapon");
   }
-  
+
+  void printXML() {
+    println(weaponBlueprint);
+  }
 }

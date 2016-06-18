@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<weaponBlueprint name="PULSE_CANNON">
+  <type>BURST</type>
+  <title>Pulse Cannon</title>
+  <short>Pulse</short>
+  <desc>Fires a concentrated pulse of energy. Can breach hulls.</desc>
+  <tooltip>Energy cannon. Small chance to breach</tooltip>
+  <damage>2</damage>
+  <radius>20</radius>
+  <sysDamage>2</sysDamage>
+  <persDamage>20</persDamage>
+  <ion>0</ion>
+  <missiles>0</missiles>
+  <shots>1</shots>
+  <sp>0</sp>
+  <fireChance>0</fireChance>
+  <breachChance>1</breachChance>
+  <cooldown>8</cooldown>
+  <power>2</power>
+  <cost>55</cost>
+  <speed>40</speed>
+  <rarity>2</rarity>
+</weaponBlueprint>
