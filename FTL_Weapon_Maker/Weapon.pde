@@ -1,5 +1,6 @@
 class Weapon {
 
+  Animation weaponArt;
   XML weaponBlueprint; // Main blueprint tag
 
   Weapon(String name, String type) {
@@ -68,38 +69,38 @@ class Weapon {
     }
   }
 
-  void setDamage(int i) {
+  void setDamage(String s) {
     if (weaponBlueprint.getChild("damage") != null) {
-      weaponBlueprint.getChild("damage").setContent(String.valueOf(i));
+      weaponBlueprint.getChild("damage").setContent(s);
     } else {
-      XML xml = parseXML("<damage>" + i + "</damage>");
+      XML xml = parseXML("<damage>" + s + "</damage>");
       weaponBlueprint.addChild(xml);
     }
   }
 
-  void setIon(int i) {
+  void setIon(String s) {
     if (weaponBlueprint.getChild("ion") != null) {
-      weaponBlueprint.getChild("ion").setContent(String.valueOf(i));
+      weaponBlueprint.getChild("ion").setContent(s);
     } else {
-      XML xml = parseXML("<ion>" + i + "</ion>");
+      XML xml = parseXML("<ion>" + s + "</ion>");
       weaponBlueprint.addChild(xml);
     }
   }
 
-  void setPersDamage(int i) {
+  void setPersDamage(String s) {
     if (weaponBlueprint.getChild("persDamage") != null) {
-      weaponBlueprint.getChild("persDamage").setContent(String.valueOf(i));
+      weaponBlueprint.getChild("persDamage").setContent(s);
     } else {
-      XML xml = parseXML("<persDamage>" + i + "</persDamage>");
+      XML xml = parseXML("<persDamage>" + s + "</persDamage>");
       weaponBlueprint.addChild(xml);
     }
   }
 
-  void setSysDamage(int i) {
+  void setSysDamage(String s) {
     if (weaponBlueprint.getChild("sysDamage") != null) {
-      weaponBlueprint.getChild("sysDamage").setContent(String.valueOf(i));
+      weaponBlueprint.getChild("sysDamage").setContent(s);
     } else {
-      XML xml = parseXML("<sysDamage>" + i + "</sysDamage>");
+      XML xml = parseXML("<sysDamage>" + s + "</sysDamage>");
       weaponBlueprint.addChild(xml);
     }
   }
@@ -140,11 +141,11 @@ class Weapon {
     }
   }
 
-  void setStun(float f) {
+  void setStun(String s) {
     if (weaponBlueprint.getChild("stun") != null) {
-      weaponBlueprint.getChild("stun").setContent(String.valueOf(f));
+      weaponBlueprint.getChild("stun").setContent(s);
     } else {
-      XML xml = parseXML("<stun>" + f + "</stun>");
+      XML xml = parseXML("<stun>" + s + "</stun>");
       weaponBlueprint.addChild(xml);
     }
   }
@@ -203,29 +204,29 @@ class Weapon {
     }
   }
 
-  void setShots(int i) {
+  void setShots(String s) {
     if (weaponBlueprint.getChild("shots") != null) {
-      weaponBlueprint.getChild("shots").setContent(String.valueOf(i));
+      weaponBlueprint.getChild("shots").setContent(s);
     } else {
-      XML xml = parseXML("<shots>" + i + "</shots>");
+      XML xml = parseXML("<shots>" + s + "</shots>");
       weaponBlueprint.addChild(xml);
     }
   }
 
-  void setMissiles(int i) {
+  void setMissiles(String s) {
     if (weaponBlueprint.getChild("missiles") != null) {
-      weaponBlueprint.getChild("missiles").setContent(String.valueOf(i));
+      weaponBlueprint.getChild("missiles").setContent(s);
     } else {
-      XML xml = parseXML("<missiles>" + i + "</missiles>");
+      XML xml = parseXML("<missiles>" + s + "</missiles>");
       weaponBlueprint.addChild(xml);
     }
   }
 
-  void setCooldown(float f) {
+  void setCooldown(String s) {
     if (weaponBlueprint.getChild("cooldown") != null) {
-      weaponBlueprint.getChild("cooldown").setContent(String.valueOf(f));
+      weaponBlueprint.getChild("cooldown").setContent(s);
     } else {
-      XML xml = parseXML("<cooldown>" + f + "</cooldown>");
+      XML xml = parseXML("<cooldown>" + s + "</cooldown>");
       weaponBlueprint.addChild(xml);
     }
   }
@@ -239,38 +240,38 @@ class Weapon {
     }
   }
 
-  void setLength(int i) {
+  void setLength(String s) {
     if (weaponBlueprint.getChild("length") != null) {
-      weaponBlueprint.getChild("length").setContent(String.valueOf(i));
+      weaponBlueprint.getChild("length").setContent(s);
     } else {
-      XML xml = parseXML("<length>" + i + "</length>");
+      XML xml = parseXML("<length>" + s + "</length>");
       weaponBlueprint.addChild(xml);
     }
   }
 
-  void setSpeed(int i) {
+  void setSpeed(String s) {
     if (weaponBlueprint.getChild("speed") != null) {
-      weaponBlueprint.getChild("speed").setContent(String.valueOf(i));
+      weaponBlueprint.getChild("speed").setContent(s);
     } else {
-      XML xml = parseXML("<speed>" + i + "</speed>");
+      XML xml = parseXML("<speed>" + s + "</speed>");
       weaponBlueprint.addChild(xml);
     }
   }
 
-  void setRadius(int i) {
+  void setRadius(String s) {
     if (weaponBlueprint.getChild("radius") != null) {
-      weaponBlueprint.getChild("radius").setContent(String.valueOf(i));
+      weaponBlueprint.getChild("radius").setContent(s);
     } else {
-      XML xml = parseXML("<radius>" + i + "</radius>");
+      XML xml = parseXML("<radius>" + s + "</radius>");
       weaponBlueprint.addChild(xml);
     }
   }
 
-  void setCost(int i) {
+  void setCost(String s) {
     if (weaponBlueprint.getChild("cost") != null) {
-      weaponBlueprint.getChild("cost").setContent(String.valueOf(i));
+      weaponBlueprint.getChild("cost").setContent(s);
     } else {
-      XML xml = parseXML("<cost>" + i + "</cost>");
+      XML xml = parseXML("<cost>" + s + "</cost>");
       weaponBlueprint.addChild(xml);
     }
   }
@@ -304,11 +305,11 @@ class Weapon {
     }
   }
 
-  void setBoost(String t, int a, int c) {
+  void setBoost(String t, String a, String c) {
     if (weaponBlueprint.getChild("boost") != null) {
       weaponBlueprint.getChild("boost").getChild("type").setContent(t);
-      weaponBlueprint.getChild("boost").getChild("amount").setContent(String.valueOf(a));
-      weaponBlueprint.getChild("boost").getChild("count").setContent(String.valueOf(c));
+      weaponBlueprint.getChild("boost").getChild("amount").setContent(a);
+      weaponBlueprint.getChild("boost").getChild("count").setContent(c);
     } else {
       XML boost = parseXML("<boost></boost>");
 
@@ -330,6 +331,14 @@ class Weapon {
     } else {
       XML xml = parseXML("<chargeLevels>" + i + "</chargeLevels>");
       weaponBlueprint.addChild(xml);
+    }
+  }
+  
+  void setProjectiles(Projectile[] ps) {
+    XML projectiles = parseXML("<projectiles></projectile>");
+    
+    for (Projectile p : ps) {
+      projectiles.addChild(p.projectile);
     }
   }
 }

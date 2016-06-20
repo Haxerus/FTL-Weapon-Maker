@@ -1,8 +1,14 @@
 class Animation {
 
+  boolean isWeapon;
   XML animSheet, weaponAnim, anim;
+  PGraphics frame;
+  PImage strip, img;
 
-  Animation(String name, String src, int w, int h, int fw, int fh) {
+  Animation(String name, String src, int w, int h, int fw, int fh, boolean b) {
+    isWeapon = b;
+    strip = loadImage(src);
+    frame = createGraphics(fw, fh);
     animSheet = parseXML("<animSheet name=\""+name+"\" w=\""+w+"\" h=\""+h+"\" fw=\""+fw+"\" fh=\""+fh+"\">"+src+"</animSheet>");
   }
 
@@ -15,7 +21,7 @@ class Animation {
     XML fireFrame = parseXML("<fireFrame>"+ff+"</fireFrame>");
     XML firePoint  = parseXML("<firePoint x=\""+fX+"\" y=\""+fY+"\"/>");
     XML mountPoint  = parseXML("<mountPoint x=\""+mX+"\" y=\""+mY+"\"/>");
-    
+
     weaponAnim.addChild(sheet);
     weaponAnim.addChild(desc);
     weaponAnim.addChild(chargedFrame);
@@ -34,7 +40,7 @@ class Animation {
     XML firePoint  = parseXML("<firePoint x=\""+fX+"\" y=\""+fY+"\"/>");
     XML mountPoint  = parseXML("<mountPoint x=\""+mX+"\" y=\""+mY+"\"/>");
     XML chargeImage = parseXML("<chargeImage>"+glowImage+"</chargeImage>");
-    
+
     weaponAnim.addChild(sheet);
     weaponAnim.addChild(desc);
     weaponAnim.addChild(chargedFrame);
@@ -54,7 +60,7 @@ class Animation {
     XML firePoint  = parseXML("<firePoint x=\""+fX+"\" y=\""+fY+"\"/>");
     XML mountPoint  = parseXML("<mountPoint x=\""+mX+"\" y=\""+mY+"\"/>");
     XML boost = parseXML("<sheet>"+boostAnim.animSheet.getString("name")+"</sheet>");
-    
+
     weaponAnim.addChild(sheet);
     weaponAnim.addChild(desc);
     weaponAnim.addChild(chargedFrame);
@@ -75,7 +81,7 @@ class Animation {
     XML mountPoint  = parseXML("<mountPoint x=\""+mX+"\" y=\""+mY+"\"/>");
     XML chargeImage = parseXML("<chargeImage>"+glowImage+"</chargeImage>");
     XML boost = parseXML("<sheet>"+boostAnim.animSheet.getString("name")+"</sheet>");
-    
+
     weaponAnim.addChild(sheet);
     weaponAnim.addChild(desc);
     weaponAnim.addChild(chargedFrame);
@@ -88,13 +94,23 @@ class Animation {
 
   void setAnim(float t) {
     anim = parseXML("<anim name\""+animSheet.getString("name")+"></anim>");
-    
+
     XML sheet = parseXML("<sheet>"+animSheet.getString("name")+"</sheet>");
     XML desc = parseXML("<desc length=\"" + (animSheet.getInt("w")/animSheet.getInt("fw")) + "\" x=\"0\" y=\"0\"");
     XML time = parseXML("<time>"+t+"</time>");
-    
+
     anim.addChild(sheet);
     anim.addChild(desc);
     anim.addChild(time);
+  }
+
+  void printXML() {
+    println(animSheet);
+  }
+  
+  void renderFrame(int f) {
+    frame.beginDraw();
+    img = strip.get(frame.width * f, 0, frame.width, frame.height);
+    frame.endDraw();
   }
 }
