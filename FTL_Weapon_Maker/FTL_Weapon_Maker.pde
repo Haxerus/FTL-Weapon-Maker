@@ -3,16 +3,18 @@ import controlP5.*;
 PImage back, logo;
 color fillcol, bordercol;
 int currentIndex;
+String modDir;
 
 ControlP5 main, cp5;
 
-Button addWep, delWep, applyXML, saveXML, addProj, inc, dec;
-DropdownList type, boost, projectiles, wepList;
+Button addWep, delWep, applyXML, saveXML, inc, dec, folder;
+DropdownList type, boost;
 Textfield name, title, desc, tooltip, flavorType;
 Textfield damage, ion, persDamage, sysDamage, stun, cooldown, missiles, shots, beamLength, speed, radius, amount, count, cost;
+Textfield wepImgSrc, wepImgName, wepImgW, wepImgH, wepImgFW, wepImgFH, wepImgCF, wepImgFF, wepImgFirePoint, wepImgMountPoint, wepGlowSrc;
 Slider sp, fireChance, breachChance, stunChance, power, rarity, chargeLevels, red, green, blue;
-CheckBox chex;
-Textlabel wepMade, index, currWep;
+CheckBox chex, imgChex;
+Textlabel index, currWep, currDir;
 Tab images, sounds, output;
 
 ArrayList<Weapon> weapons;
@@ -24,23 +26,49 @@ void setup() {
 
   back = loadImage("background.png");
   logo = loadImage("logo-half.png");
+  
+  PImage icon = loadImage("icon.png");
+  surface.setIcon(icon);
 
   currentIndex = 0;
 
   weapons = new ArrayList<Weapon>();
+
+  //selectFolder("Select your mod's directory...", "folderSelected");
 
   cp5 = new ControlP5(this);
 
   fillcol = cp5.getColor().getBackground();
   bordercol = cp5.getColor().getForeground();
 
-  addWep = cp5.addButton("New Weapon...").setPosition(20, 45).setSize(100, 30);
-  delWep = cp5.addButton("Delete Weapon...").setPosition(20, 90).setSize(100, 30);
+  /**
+   *  Tab init
+   *
+   */
+
+  images = cp5.addTab("IMAGE PROPERTIES");
+  sounds = cp5.addTab("SOUND PROPERTIES");
+  output = cp5.addTab("OUTPUT SETTINGS");
+  cp5.getTab("default").setLabel("WEAPON PROPERTIES");
+
+  /**
+   *  GUI Elements that are used GLOBALLY
+   *
+   */
+
   applyXML = cp5.addButton("Apply").setPosition(width - 90, height - 60).setSize(50, 20);
-  saveXML = cp5.addButton("Save XML File").setPosition(20, 45).setSize(100, 30);
-  addProj = cp5.addButton("ADD PROJECTILE").setPosition(160, 480).setSize(65, 15);
   inc = cp5.addButton("+").setPosition(400, 50).setSize(20, 20);
   dec = cp5.addButton("-").setPosition(350, 50).setSize(20, 20);
+  index = cp5.addLabel(Integer.toString(currentIndex)).setPosition(379, 56);
+  currWep = cp5.addLabel("No weapons").setPosition(355, 100);
+
+  /**
+   *  GUI Elements that are used in the WEAPON PROPERTIES TAB
+   *
+   */
+
+  addWep = cp5.addButton("New Weapon...").setPosition(20, 45).setSize(100, 30);
+  delWep = cp5.addButton("Delete Weapon...").setPosition(20, 90).setSize(100, 30);
 
   type = cp5.addDropdownList("TYPE").setPosition(140, 50).setSize(80, 120).setBarHeight(20).setItemHeight(20);
   type.addItem("LASER", 0);
@@ -54,8 +82,6 @@ void setup() {
   boost.addItem("damage", 0);
   boost.addItem("cooldown", 1);
   boost.close();
-
-  projectiles = cp5.addDropdownList("PROJECTILES").setPosition(40, 480).setSize(100, 60).setBarHeight(15).setItemHeight(15);
 
   name = cp5.addTextfield("NAME").setPosition(240, 50).setWidth(80).setAutoClear(false);
   title = cp5.addTextfield("TITLE").setPosition(40, 180).setWidth(80).setAutoClear(false);
@@ -96,22 +122,78 @@ void setup() {
   chex.addItem("BOOSTS PER SHOT", 3);
   chex.addItem("STORES CHARGES", 4);
 
-  wepMade = cp5.addLabel("No weapons have been made").setPosition(width - 150, 140);
-  index = cp5.addLabel(Integer.toString(currentIndex)).setPosition(379, 56);
-  currWep = cp5.addLabel("No weapons").setPosition(450, 56);
+  /**
+   *  GUI Elements that are used in the IMAGE PROPERTIES TAB
+   *
+   */
 
-  images = cp5.addTab("IMAGE PROPERTIES");
-  sounds = cp5.addTab("SOUND PROPERTIES");
-  output = cp5.addTab("OUTPUT SETTINGS");
-  cp5.getTab("default").setLabel("WEAPON PROPERTIES");
+  wepImgName = cp5.addTextfield("WEAPON ANIMATION NAME").setPosition(40, 220).setWidth(100).setAutoClear(false);
+  wepImgSrc = cp5.addTextfield("WEAPON IMAGE PATH").setPosition(40, 180).setWidth(220).setAutoClear(false);
+  wepImgSrc.setText("Should look like \"weapons/example_image.png\"");
+  wepImgW = cp5.addTextfield("WEAPON IMAGE WIDTH").setPosition(40, 260).setWidth(30).setAutoClear(false);
+  wepImgH = cp5.addTextfield("WEAPON IMAGE HEIGHT").setPosition(40, 300).setWidth(30).setAutoClear(false);
+  wepImgFW = cp5.addTextfield("WEAPON FRAME WIDTH").setPosition(40, 340).setWidth(30).setAutoClear(false);
+  wepImgFH = cp5.addTextfield("WEAPON FRAME HEIGHT").setPosition(40, 380).setWidth(30).setAutoClear(false);
+  wepImgCF = cp5.addTextfield("WEAPON CHARGED FRAME").setPosition(140, 260).setWidth(30).setAutoClear(false);
+  wepImgFF = cp5.addTextfield("WEAPON FIRE FRAME").setPosition(140, 300).setWidth(30).setAutoClear(false);
+  wepImgFirePoint = cp5.addTextfield("WEAPON FIRE POINT (X, Y)").setPosition(140, 340).setWidth(30).setAutoClear(false);
+  wepImgMountPoint = cp5.addTextfield("WEAPON MOUNT POINT (X, Y)").setPosition(140, 380).setWidth(30).setAutoClear(false);
+  wepGlowSrc = cp5.addTextfield("CHARGE GLOW IMAGE PATH").setPosition(290, 180).setWidth(220).setAutoClear(false);
+  wepGlowSrc.setText("Should look like \"weapons/example_glow.png\"");
+  
+  imgChex = cp5.addCheckBox("image options").setPosition(40, 430).setSize(15, 15).setItemsPerRow(1).setSpacingColumn(90).setSpacingRow(10);
+  imgChex.addItem("CHARGE GLOW IMAGE", 0);
+  imgChex.addItem("BOOST IMAGE", 1);
+  imgChex.addItem("CUSTOM EXPLOSION", 0);
+  imgChex.addItem("HAS CHARGE GLOW IMAGE", 0);
+
+
+  /**
+   *  GUI Elements that are used in the SOUND PROPERTIES TAB
+   *
+   */
+
+  // TODO Add Sound elements
+
+  /**
+   *  GUI Elements that are used in the OUTPUT PROPERTIES TAB
+   *
+   */
+
+  saveXML = cp5.addButton("Save XML File").setPosition(20, 45).setSize(100, 30);
+  folder = cp5.addButton("Select Mod Directory").setPosition(20, 90).setSize(100, 30);
+  currDir = cp5.addLabel("No mod directory").setPosition(20, 130);
+
+  /**
+   *  Locking and Moving Elements
+   *
+   */
 
   applyXML.moveTo("global");
+  inc.moveTo("global");
+  dec.moveTo("global");
+  index.moveTo("global");
+  currWep.moveTo("global");
+
+  folder.moveTo(output);
   saveXML.moveTo(output);
-  addProj.moveTo(images);
-  projectiles.moveTo(images);
+  currDir.moveTo(output);
+
+  wepImgName.moveTo(images);
+  wepImgSrc.moveTo(images);
+  wepImgW.moveTo(images);
+  wepImgH.moveTo(images);
+  wepImgFW.moveTo(images);
+  wepImgFH.moveTo(images);
+  wepImgCF.moveTo(images);
+  wepImgFF.moveTo(images);
+  wepImgFirePoint.moveTo(images);
+  wepImgMountPoint.moveTo(images);
+  wepGlowSrc.moveTo(images);
+  imgChex.moveTo(images);
+
 
   setLock(addWep, true);
-  setLock(delWep, true);
   setLock(beamLength, true);
   setLock(stun, true);
   setLock(radius, true);
@@ -122,12 +204,13 @@ void setup() {
   setLock(red, true);
   setLock(green, true);
   setLock(blue, true);
+  setLock(wepGlowSrc, true);
 }
 
 void draw() {
-  background(back);
+  //background(back);
+  background(0);
   image(logo, width - logo.width, 0);
-  //noStroke();
   fill(255, 120);
   rect(20, 160, width - 40, height - 180);
 
@@ -137,58 +220,62 @@ void draw() {
     setLock(addWep, true);
   }
 
+  if (modDir != null) {
+    currDir.setText("Mod Directory: " + modDir);
+  }
+
   if (weapons.size() > 0) {
+    for (int i = 0; i < cp5.getAll().size(); i++) {
+      cp5.getAll().get(i).show();
+    }
+
+    setLock(saveXML, false);
+
     weapons.get(currentIndex).printXML();
     index.setText(Integer.toString(currentIndex+1));
     String currName = weapons.get(currentIndex).weaponBlueprint.getString("name");
     String currType = weapons.get(currentIndex).weaponBlueprint.getChild("type").getContent();
-    currWep.setText("Current Weapon: " + currName + "\n" + "Current Weapon Type: " + currType);
-
-    setLock(delWep, false);
+    currWep.setText("Current Weapon Name: " + currName + "\n" + "Current Weapon Type: " + currType);
 
     if (weapons.get(currentIndex).weaponBlueprint.getChild("type").getContent().equals("BEAM")) {
+      setLock(delWep, false);
+      setLock(shots, true);
+      setLock(radius, true);
+      setLock(red, false);
+      setLock(green, false);
+      setLock(blue, false);
       if (cp5.getTab("default").isActive()) {
         fill(red.getValue(), green.getValue(), blue.getValue());
         rect(280, 380, 10, 75);
       }
-      setLock(delWep, false);
-      setLock(shots, true);
-      setLock(radius, true);
-      setLock(projectiles, true);
-      setLock(addProj, true);
-      setLock(red, false);
-      setLock(green, false);
-      setLock(blue, false);
     } else if (weapons.get(currentIndex).weaponBlueprint.getChild("type").getContent().equals("BURST")) {
       setLock(shots, true);
       setLock(radius, false);
-      setLock(projectiles, false);
-      setLock(addProj, false);
       if (cp5.getTab("default").isActive()) {
         fill(100);
         rect(280, 380, 10, 75);
       }
     } else {
-      if (cp5.getTab("default").isActive()) {
-        fill(100);
-        rect(280, 380, 10, 75);
-      }
       setLock(shots, false);
       setLock(radius, true);
-      setLock(projectiles, true);
-      setLock(addProj, true);
       setLock(beamLength, true);
       setLock(red, true);
       setLock(green, true);
       setLock(blue, true);
+      if (cp5.getTab("default").isActive()) {
+        fill(100);
+        rect(280, 380, 10, 75);
+      }
     }
 
+    // Only enables stun duration field if stunChance > 1
     if (stunChance.getValue() > 0) {
       setLock(stun, false);
     } else {
       setLock(stun, true);
     }
 
+    // Checks "Weapon Boost" checkbox to enable slider
     if (chex.getState(3)) {
       setLock(boost, false);
       setLock(amount, false);
@@ -199,20 +286,44 @@ void draw() {
       setLock(count, true);
     }
 
+    // Check if the "Charge Levels" check box is toggled to enable chargeLevels slider
     if (chex.getState(4)) {
       setLock(chargeLevels, false);
     } else {
       setLock(chargeLevels, true);
     }
+        
+    if (imgChex.getState(0)) {
+      setLock(wepGlowSrc, false);
+    } else {
+      setLock(wepGlowSrc, true);
+    }
   } else {
+    index.setText("0");
     currWep.setText("No weapons");
+    setLock(saveXML, true);
+
+    for (int i = 0; i < cp5.getAll().size(); i++) {
+      if (cp5.getAll().get(i) != addWep &&
+        cp5.getAll().get(i) != type &&
+        cp5.getAll().get(i) != name &&
+        cp5.getAll().get(i) != currWep &&
+        cp5.getAll().get(i) != dec &&
+        cp5.getAll().get(i) != inc &&
+        cp5.getAll().get(i) != index &&
+        cp5.getAll().get(i) != folder &&
+        cp5.getAll().get(i) != saveXML &&
+        cp5.getAll().get(i) != currDir)
+      {
+        cp5.getAll().get(i).hide();
+      }
+    }
   }
 }
 
 void controlEvent(ControlEvent e) {
   if (e.isFrom(addWep)) {
     weapons.add(new Weapon(name.getText(), type.getLabel()));
-    wepMade.setText("Successfully created " + name.getText());
     if (weapons.size() > 1) {
       currentIndex++;
     }
@@ -224,17 +335,34 @@ void controlEvent(ControlEvent e) {
   } else if (e.isFrom(applyXML)) {
     applyProperties();
   } else if (e.isFrom(saveXML) && weapons.size() > 0) {
-    saveXML(weapons.get(currentIndex).weaponBlueprint, "blueprints.xml.append");
-  } else if (e.isFrom(addProj)) {
-    addProjectile();
   } else if (e.isFrom(dec) && currentIndex > 0) {
     currentIndex--;
   } else if (e.isFrom(inc) && currentIndex < (weapons.size()-1)) {
     currentIndex++;
+  } else if (e.isFrom(folder)) {
+    selectFolder("Select your mod's directory...", "folderSelected");
   }
 }
 
-void addProjectile() {
+void setLock(Controller c, boolean b) {
+  c.setLock(b);
+  if (b) {
+    c.setColorBackground(color(100, 150));
+    c.setColorForeground(color(50, 150));
+  } else {
+    c.setColorBackground(color(fillcol));
+    c.setColorForeground(color(bordercol));
+  }
+}
+
+void folderSelected(File selection) {
+  if (selection == null) {
+    println("Window was closed or the user hit cancel.");
+    selectFolder("Select your mod's directory:", "folderSelected");
+  } else {
+    println("User selected " + selection.getAbsolutePath());
+    modDir = selection.getAbsolutePath();
+  }
 }
 
 void applyProperties() {
@@ -260,7 +388,7 @@ void applyProperties() {
 
     weapons.get(currentIndex).setCooldown(cooldown.getText());
 
-    if (!weapons.get(currentIndex).weaponBlueprint.getChild("type").getContent().equals("BEAM")) {
+    if (weapons.get(currentIndex).weaponBlueprint.getChild("type").getContent().equals("BEAM")) {
       weapons.get(currentIndex).setLength(beamLength.getText());
       weapons.get(currentIndex).setColor((int)red.getValue(), (int)green.getValue(), (int)blue.getValue());
     } else if (weapons.get(currentIndex).weaponBlueprint.getChild("type").getContent().equals("BURST")) {
@@ -290,16 +418,5 @@ void applyProperties() {
     if (chex.getState(3) && !boost.getLabel().equals("BOOST TYPE")) {
       weapons.get(currentIndex).setBoost(boost.getLabel(), amount.getText(), count.getText());
     }
-  }
-}
-
-void setLock(Controller c, boolean b) {
-  c.setLock(b);
-  if (b) {
-    c.setColorBackground(color(100, 150));
-    c.setColorForeground(color(50, 150));
-  } else {
-    c.setColorBackground(color(fillcol));
-    c.setColorForeground(color(bordercol));
   }
 }

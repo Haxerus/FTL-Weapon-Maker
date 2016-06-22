@@ -1,6 +1,5 @@
 class Weapon {
 
-  Animation weaponArt;
   XML weaponBlueprint; // Main blueprint tag
 
   Weapon(String name, String type) {
@@ -338,7 +337,6 @@ class Weapon {
     XML projectiles = parseXML("<projectiles></projectile>");
     
     for (Projectile p : ps) {
-      projectiles.addChild(p.projectile);
     }
   }
 }
