@@ -11,13 +11,15 @@ Button addWep, delWep, applyXML, saveXML, inc, dec, folder;
 DropdownList type, boost;
 Textfield name, title, desc, tooltip, flavorType;
 Textfield damage, ion, persDamage, sysDamage, stun, cooldown, missiles, shots, beamLength, speed, radius, amount, count, cost;
-Textfield wepImgSrc, wepImgName, wepImgW, wepImgH, wepImgFW, wepImgFH, wepImgCF, wepImgFF, wepImgFirePoint, wepImgMountPoint, wepGlowSrc;
+Textfield wepImgSrc, wepImgName, wepImgW, wepImgH, wepImgFW, wepImgFH, wepImgCF, wepImgFF, wepImgFirePoint, wepImgMountPoint, wepGlowSrc, explosionSrc, boostSrc;
+Textfield expW, expH, expFW, expFH, boostW, boostH, boostFW, boostFH, expName, expTime, boostName, boostTime, bulletSrc, bulletName, bulletTime, bulletW, bulletH, bulletFW, bulletFH;
 Slider sp, fireChance, breachChance, stunChance, power, rarity, chargeLevels, red, green, blue;
 CheckBox chex, imgChex;
 Textlabel index, currWep, currDir;
 Tab images, sounds, output;
 
 ArrayList<Weapon> weapons;
+ArrayList<Projectile> proj;
 
 void setup() {
   size(800, 600);
@@ -26,7 +28,7 @@ void setup() {
 
   back = loadImage("background.png");
   logo = loadImage("logo-half.png");
-  
+
   PImage icon = loadImage("icon.png");
   surface.setIcon(icon);
 
@@ -110,7 +112,7 @@ void setup() {
   stunChance = cp5.addSlider("STUN CHANCE").setPosition(400, 500).setSize(100, 20).setRange(0, 10).setNumberOfTickMarks(11);
   power = cp5.addSlider("POWER").setPosition(620, 380).setSize(50, 20).setRange(0, 4).setNumberOfTickMarks(5);
   rarity = cp5.addSlider("RARITY").setPosition(620, 420).setSize(50, 20).setRange(0, 5).setNumberOfTickMarks(6);
-  chargeLevels = cp5.addSlider("# OF CHARGE LEVELS").setPosition(620, 460).setSize(50, 20).setRange(0, 5).setNumberOfTickMarks(6);
+  chargeLevels = cp5.addSlider("# OF CHARGE LEVELS").setPosition(620, 460).setSize(50, 20).setRange(0, 4).setNumberOfTickMarks(5);
   red = cp5.addSlider("RED").setPosition(40, 380).setSize(200, 15).setRange(0, 255).setNumberOfTickMarks(256);
   green = cp5.addSlider("GREEN").setPosition(40, 410).setSize(200, 15).setRange(0, 255).setNumberOfTickMarks(256);
   blue = cp5.addSlider("BLUE").setPosition(40, 440).setSize(200, 15).setRange(0, 255).setNumberOfTickMarks(256);
@@ -138,14 +140,41 @@ void setup() {
   wepImgFF = cp5.addTextfield("WEAPON FIRE FRAME").setPosition(140, 300).setWidth(30).setAutoClear(false);
   wepImgFirePoint = cp5.addTextfield("WEAPON FIRE POINT (X, Y)").setPosition(140, 340).setWidth(30).setAutoClear(false);
   wepImgMountPoint = cp5.addTextfield("WEAPON MOUNT POINT (X, Y)").setPosition(140, 380).setWidth(30).setAutoClear(false);
-  wepGlowSrc = cp5.addTextfield("CHARGE GLOW IMAGE PATH").setPosition(290, 180).setWidth(220).setAutoClear(false);
+  wepGlowSrc = cp5.addTextfield("CHARGE GLOW IMAGE PATH").setPosition(40, 420).setWidth(220).setAutoClear(false);
   wepGlowSrc.setText("Should look like \"weapons/example_glow.png\"");
+  explosionSrc = cp5.addTextfield("EXPLOSION IMAGE PATH").setPosition(290, 180).setWidth(220).setAutoClear(false);
+  explosionSrc.setText("Should look like \"effects/example_explosion.png\"");
+  boostSrc = cp5.addTextfield("BOOST IMAGE PATH").setPosition(540, 180).setWidth(220).setAutoClear(false);
+  boostSrc.setText("Should look like \"weapons/example_boost.png\"");
   
-  imgChex = cp5.addCheckBox("image options").setPosition(40, 430).setSize(15, 15).setItemsPerRow(1).setSpacingColumn(90).setSpacingRow(10);
+  expName = cp5.addTextfield("EXPLOSION NAME").setPosition(290, 220).setWidth(100).setAutoClear(false);
+  expTime = cp5.addTextfield("EXPLOSION TIME (SEC PER FRAME)").setPosition(400, 220).setWidth(30).setAutoClear(false);
+  expW = cp5.addTextfield("EXPLOSION WIDTH").setPosition(290, 260).setWidth(30).setAutoClear(false);
+  expH = cp5.addTextfield("EXPLOSION HEIGHT").setPosition(400, 260).setWidth(30).setAutoClear(false);
+  expFW = cp5.addTextfield("EXPLOSION FRAME WIDTH").setPosition(290, 300).setWidth(30).setAutoClear(false);
+  expFH = cp5.addTextfield("EXPLOSION FRAME HEIGHT").setPosition(400, 300).setWidth(30).setAutoClear(false);
+  
+  boostName = cp5.addTextfield("BOOST NAME").setPosition(540, 220).setWidth(100).setAutoClear(false);
+  boostTime = cp5.addTextfield("BOOST TIME (SEC PER FRAME)").setPosition(650, 220).setWidth(30).setAutoClear(false);
+  boostW = cp5.addTextfield("BOOST WIDTH").setPosition(540, 260).setWidth(30).setAutoClear(false);
+  boostH = cp5.addTextfield("BOOST HEIGHT").setPosition(650, 260).setWidth(30).setAutoClear(false);
+  boostFW = cp5.addTextfield("BOOST FRAME WIDTH").setPosition(540, 300).setWidth(30).setAutoClear(false);
+  boostFH = cp5.addTextfield("BOOST FRAME HEIGHT").setPosition(650, 300).setWidth(30).setAutoClear(false);
+  
+  bulletSrc = cp5.addTextfield("PROJECTILE IMAGE PATH").setPosition(290, 380).setWidth(220).setAutoClear(false);
+  bulletSrc.setText("Should look like \"weapons/example_bullet.png\"");
+  bulletName = cp5.addTextfield("PROJECTILE NAME").setPosition(290, 420).setWidth(100).setAutoClear(false);
+  bulletTime = cp5.addTextfield("PROJECTILE TIME (SEC PER FRAME)").setPosition(400, 420).setWidth(30).setAutoClear(false);
+  bulletW = cp5.addTextfield("PROJECTILE WIDTH").setPosition(290, 460).setWidth(30).setAutoClear(false);
+  bulletH = cp5.addTextfield("PROJECTILE HEIGHT").setPosition(400, 460).setWidth(30).setAutoClear(false);
+  bulletFW = cp5.addTextfield("PROJECTILE FRAME WIDTH").setPosition(290, 500).setWidth(30).setAutoClear(false);
+  bulletFH = cp5.addTextfield("PROJECTILE FRAME HEIGHT").setPosition(400, 500).setWidth(30).setAutoClear(false);
+  
+
+  imgChex = cp5.addCheckBox("image options").setPosition(40, 470).setSize(15, 15).setItemsPerRow(1).setSpacingColumn(90).setSpacingRow(10);
   imgChex.addItem("CHARGE GLOW IMAGE", 0);
   imgChex.addItem("BOOST IMAGE", 1);
-  imgChex.addItem("CUSTOM EXPLOSION", 0);
-  imgChex.addItem("HAS CHARGE GLOW IMAGE", 0);
+  imgChex.addItem("CUSTOM EXPLOSION", 2);
 
 
   /**
@@ -190,7 +219,28 @@ void setup() {
   wepImgFirePoint.moveTo(images);
   wepImgMountPoint.moveTo(images);
   wepGlowSrc.moveTo(images);
+  explosionSrc.moveTo(images);
+  boostSrc.moveTo(images);
   imgChex.moveTo(images);
+  expName.moveTo(images);
+  expTime.moveTo(images);
+  expW.moveTo(images);
+  expH.moveTo(images);
+  expFW.moveTo(images);
+  expFH.moveTo(images);
+  boostName.moveTo(images);
+  boostTime.moveTo(images);
+  boostW.moveTo(images);
+  boostH.moveTo(images);
+  boostFW.moveTo(images);
+  boostFH.moveTo(images);
+  bulletSrc.moveTo(images);
+  bulletName.moveTo(images);
+  bulletTime.moveTo(images);
+  bulletW.moveTo(images);
+  bulletH.moveTo(images);
+  bulletFW.moveTo(images);
+  bulletFH.moveTo(images);
 
 
   setLock(addWep, true);
@@ -208,8 +258,7 @@ void setup() {
 }
 
 void draw() {
-  //background(back);
-  background(0);
+  background(back);
   image(logo, width - logo.width, 0);
   fill(255, 120);
   rect(20, 160, width - 40, height - 180);
@@ -244,6 +293,12 @@ void draw() {
       setLock(red, false);
       setLock(green, false);
       setLock(blue, false);
+
+      setLock(chex.getItems().get(1), true);
+      setLock(chex.getItems().get(2), true);
+      setLock(chex.getItems().get(4), true);
+      setLock(imgChex.getItems().get(2), true);
+
       if (cp5.getTab("default").isActive()) {
         fill(red.getValue(), green.getValue(), blue.getValue());
         rect(280, 380, 10, 75);
@@ -255,6 +310,11 @@ void draw() {
         fill(100);
         rect(280, 380, 10, 75);
       }
+      
+      setLock(chex.getItems().get(1), false);
+      setLock(chex.getItems().get(2), false);
+      setLock(chex.getItems().get(4), true);
+      setLock(imgChex.getItems().get(2), false);
     } else {
       setLock(shots, false);
       setLock(radius, true);
@@ -266,6 +326,11 @@ void draw() {
         fill(100);
         rect(280, 380, 10, 75);
       }
+      
+      setLock(imgChex.getItems().get(2), false);
+      setLock(chex.getItems().get(1), false);
+      setLock(chex.getItems().get(2), false);
+      setLock(chex.getItems().get(4), false);
     }
 
     // Only enables stun duration field if stunChance > 1
@@ -292,16 +357,53 @@ void draw() {
     } else {
       setLock(chargeLevels, true);
     }
-        
+
     if (imgChex.getState(0)) {
       setLock(wepGlowSrc, false);
     } else {
       setLock(wepGlowSrc, true);
     }
+
+    if (imgChex.getState(1)) {
+      setLock(boostName, false);
+      setLock(boostTime, false);
+      setLock(boostSrc, false);
+      setLock(boostW, false);
+      setLock(boostH, false);
+      setLock(boostFW, false);
+      setLock(boostFH, false);
+    } else {
+      setLock(boostName, true);
+      setLock(boostTime, true);
+      setLock(boostSrc, true);
+      setLock(boostW, true);
+      setLock(boostH, true);
+      setLock(boostFW, true);
+      setLock(boostFH, true);
+    }
+
+    if (imgChex.getState(2) && !weapons.get(currentIndex).weaponBlueprint.getChild("type").getContent().equals("BEAM")) {
+      setLock(expName, false);
+      setLock(expTime, false);
+      setLock(explosionSrc, false);
+      setLock(expW, false);
+      setLock(expH, false);
+      setLock(expFW, false);
+      setLock(expFH, false);
+    } else {
+      setLock(expName, true);
+      setLock(expTime, true);
+      setLock(explosionSrc, true);
+      setLock(expW, true);
+      setLock(expH, true);
+      setLock(expFW, true);
+      setLock(expFH, true);
+    }
   } else {
     index.setText("0");
     currWep.setText("No weapons");
     setLock(saveXML, true);
+    println("No weapons in register");
 
     for (int i = 0; i < cp5.getAll().size(); i++) {
       if (cp5.getAll().get(i) != addWep &&

@@ -1,8 +1,11 @@
-class Projectile {
-
-  Animation projAnim;
+class Projectile extends Animation {
   
-  Projectile(Animation a, String count, boolean fake) {
-    projAnim = a;
+  String count;
+  boolean fake;
+
+  Projectile(String name, String src, String w, String h, String fw, String fh, String t, String s, boolean b) {
+    super(name, src, w, h, fw, fh, t);
+    count = s;
+    fake = b;
   }
 }

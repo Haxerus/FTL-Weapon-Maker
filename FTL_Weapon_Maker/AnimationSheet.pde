@@ -6,7 +6,7 @@ class AnimationSheet {
 
   XML animSheet;
 
-  AnimationSheet(String src, String name, String w, String h, String fw, String fh) {
+  AnimationSheet(String name, String src, String w, String h, String fw, String fh) {
     animSheet = parseXML("<animSheet name=\""+name+"\" w=\""+w+"\" h=\""+h+"\" fw=\""+fw+"\" fh=\""+fh+"\">"+src+"</animSheet>");
 
     strip = loadImage(modDir + "/img/" + src);

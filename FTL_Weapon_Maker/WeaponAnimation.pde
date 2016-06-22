@@ -1,5 +1,7 @@
 class WeaponAnimation extends AnimationSheet {
+
   XML weaponAnim;
+  Animation glowAnim, boostAnim;
 
   WeaponAnimation(String name, String src, String w, String h, String fw, String fh, int cf, int ff, int fX, int fY, int mX, int mY) {
     super(src, name, w, h, fw, fh);
@@ -44,7 +46,9 @@ class WeaponAnimation extends AnimationSheet {
   }
 
   WeaponAnimation(String name, String src, String w, String h, String fw, String fh, int cf, int ff, int fX, int fY, int mX, int mY, Animation a) {
-    super(src, name, w, h, fw, fh);
+    super(name, src, w, h, fw, fh);
+
+    boostAnim = a;
 
     weaponAnim = parseXML("<weaponAnim name\""+animSheet.getString("name")+"></weaponAnim>");
 
@@ -67,6 +71,8 @@ class WeaponAnimation extends AnimationSheet {
 
   WeaponAnimation(String name, String src, String glowSrc, String w, String h, String fw, String fh, int cf, int ff, int fX, int fY, int mX, int mY, Animation a) {
     super(src, name, w, h, fw, fh);
+    
+    boostAnim = a;
 
     weaponAnim = parseXML("<weaponAnim name\""+animSheet.getString("name")+"></weaponAnim>");
 

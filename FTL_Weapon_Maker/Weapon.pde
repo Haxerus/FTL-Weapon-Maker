@@ -2,7 +2,12 @@ class Weapon {
 
   XML weaponBlueprint; // Main blueprint tag
 
+  WeaponAnimation weaponArt;
+  ArrayList<Animation> projectiles;
+
   Weapon(String name, String type) {
+    projectiles = new ArrayList<Animation>();
+
     weaponBlueprint = parseXML("<weaponBlueprint name=\"" + name + "\"></weaponBlueprint>" );
 
     setType(type);
@@ -332,11 +337,47 @@ class Weapon {
       weaponBlueprint.addChild(xml);
     }
   }
-  
-  void setProjectiles(Projectile[] ps) {
-    XML projectiles = parseXML("<projectiles></projectile>");
-    
-    for (Projectile p : ps) {
+
+  void setWeaponArt(WeaponAnimation wa) {
+    weaponArt = wa;
+
+    XML weaponArt = parseXML("<weaponArt>"+wa.animSheet.getString("name")+"</weaponArt>");
+
+    weaponBlueprint.addChild(weaponArt);
+  }
+
+  void setProjectiles(ArrayList<Projectile> ps) {
+    if (ps.size() == 1) {
+      if (weaponBlueprint.getChild("type").getContent().equals("BEAM")) {
+        XML image = parseXML("<image>beam_contact</image>");
+
+        weaponBlueprint.addChild(image);
+      } else {
+        XML image = parseXML("<image>"+ps.get(0).animSheet.getString("name")+"</image>");
+
+        weaponBlueprint.addChild(image);
+
+        if (projectiles.size() < 1) {
+          projectiles.add(ps.get(0));
+        }
+      }
+    } else {
+      XML projectiles = parseXML("<projectiles></projectile>");
+
+      if (this.projectiles.size() > 0) {
+        for (int i = 0; i < this.projectiles.size(); i++) {
+          this.projectiles.remove(i);
+        }
+      }
+
+      for (int i = 0; i < ps.size(); i++) {
+        XML projectile = parseXML("<projectile count=\""+ps.get(i).count+"\" fake=\""+ps.get(i).fake+"\">"+ps.get(i).animSheet.getString("name")+"</projectile>");
+        projectiles.addChild(projectile);
+
+        this.projectiles.add(ps.get(i));
+      }
+
+      weaponBlueprint.addChild(projectiles);
     }
   }
 }

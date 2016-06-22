@@ -3,7 +3,7 @@ class Animation extends AnimationSheet {
   XML anim;
 
   Animation(String name, String src, String w, String h, String fw, String fh, String t) {
-    super(src, name, w, h, fw, fh);
+    super(name, src, w, h, fw, fh);
 
     anim = parseXML("<anim name\""+animSheet.getString("name")+"></anim>");
 
