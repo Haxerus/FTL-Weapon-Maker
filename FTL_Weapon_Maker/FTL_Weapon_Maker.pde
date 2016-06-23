@@ -7,7 +7,7 @@ String modDir;
 
 ControlP5 main, cp5;
 
-Button addWep, delWep, applyXML, saveXML, inc, dec, folder;
+Button addWep, delWep, applyXML, saveXML, inc, dec, folder, imgInc, imgDec;
 DropdownList type, boost;
 Textfield name, title, desc, tooltip, flavorType;
 Textfield damage, ion, persDamage, sysDamage, stun, cooldown, missiles, shots, beamLength, speed, radius, amount, count, cost;
@@ -15,7 +15,7 @@ Textfield wepImgSrc, wepImgName, wepImgW, wepImgH, wepImgFW, wepImgFH, wepImgCF,
 Textfield expW, expH, expFW, expFH, boostW, boostH, boostFW, boostFH, expName, expTime, boostName, boostTime, bulletSrc, bulletName, bulletTime, bulletW, bulletH, bulletFW, bulletFH;
 Slider sp, fireChance, breachChance, stunChance, power, rarity, chargeLevels, red, green, blue;
 CheckBox chex, imgChex;
-Textlabel index, currWep, currDir;
+Textlabel index, currWep, currDir, projIndex;
 Tab images, sounds, output;
 
 ArrayList<Weapon> weapons;
@@ -74,7 +74,7 @@ void setup() {
 
   type = cp5.addDropdownList("TYPE").setPosition(140, 50).setSize(80, 120).setBarHeight(20).setItemHeight(20);
   type.addItem("LASER", 0);
-  type.addItem("MISSILE", 1);
+  type.addItem("MISSILES", 1);
   type.addItem("BEAM", 2);
   type.addItem("BOMB", 3);
   type.addItem("BURST", 4);
