@@ -3,16 +3,17 @@ class Weapon {
   XML weaponBlueprint; // Main blueprint tag
 
   WeaponAnimation weaponArt;
-  ArrayList<Animation> projectiles;
+  Animation explosion;
+  ArrayList<Projectile> projectiles;
+  
+  int index;
 
   Weapon(String name, String type) {
-    projectiles = new ArrayList<Animation>();
+    projectiles = new ArrayList<Projectile>();
 
     weaponBlueprint = parseXML("<weaponBlueprint name=\"" + name + "\"></weaponBlueprint>" );
 
     setType(type);
-
-    println("Successfully created " + name + " weapon");
   }
 
   void printXML() {
@@ -339,11 +340,19 @@ class Weapon {
   }
 
   void setWeaponArt(WeaponAnimation wa) {
-    weaponArt = wa;
+    this.weaponArt = wa;
 
     XML weaponArt = parseXML("<weaponArt>"+wa.animSheet.getString("name")+"</weaponArt>");
 
     weaponBlueprint.addChild(weaponArt);
+  }
+
+  void setExplosion(Animation a) {
+    this.explosion = a;
+
+    XML explosion = parseXML("<explosion>"+a.animSheet.getString("name")+"</explosion>");
+    
+    weaponBlueprint.addChild(explosion);
   }
 
   void setProjectiles(ArrayList<Projectile> ps) {

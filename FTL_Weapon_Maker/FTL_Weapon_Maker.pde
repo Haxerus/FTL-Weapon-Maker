@@ -7,19 +7,18 @@ String modDir;
 
 ControlP5 main, cp5;
 
-Button addWep, delWep, applyXML, saveXML, inc, dec, folder, imgInc, imgDec;
+Button addWep, delWep, applyXML, saveXML, inc, dec, folder, imgInc, imgDec, addProj, delProj;
 DropdownList type, boost;
 Textfield name, title, desc, tooltip, flavorType;
 Textfield damage, ion, persDamage, sysDamage, stun, cooldown, missiles, shots, beamLength, speed, radius, amount, count, cost;
-Textfield wepImgSrc, wepImgName, wepImgW, wepImgH, wepImgFW, wepImgFH, wepImgCF, wepImgFF, wepImgFirePoint, wepImgMountPoint, wepGlowSrc, explosionSrc, boostSrc;
+Textfield wepImgSrc, wepImgName, wepImgW, wepImgH, wepImgFW, wepImgFH, wepImgCF, wepImgFF, wepImgFirePoint, wepImgMountPoint, wepGlowSrc, explosionSrc, boostSrc, projCount;
 Textfield expW, expH, expFW, expFH, boostW, boostH, boostFW, boostFH, expName, expTime, boostName, boostTime, bulletSrc, bulletName, bulletTime, bulletW, bulletH, bulletFW, bulletFH;
 Slider sp, fireChance, breachChance, stunChance, power, rarity, chargeLevels, red, green, blue;
-CheckBox chex, imgChex;
-Textlabel index, currWep, currDir, projIndex;
+CheckBox chex, imgChex, projFake;
+Textlabel index, currWep, currDir, projIndex, projInfo;
 Tab images, sounds, output;
 
 ArrayList<Weapon> weapons;
-ArrayList<Projectile> proj;
 
 void setup() {
   size(800, 600);
@@ -129,6 +128,13 @@ void setup() {
    *
    */
 
+  imgInc = cp5.addButton("NEXT").setPosition(540, 380).setSize(30, 20);
+  imgDec = cp5.addButton("PREV").setPosition(645, 380).setSize(30, 20);
+  projIndex = cp5.addLabel("Projectile 0").setPosition(575, 385);
+  projInfo = cp5.addLabel("No Projectiles Created").setPosition(575, 530);
+  addProj = cp5.addButton("Add Projectile").setPosition(690, 380);
+  delProj = cp5.addButton("Del. Projectile").setPosition(690, 410);
+
   wepImgName = cp5.addTextfield("WEAPON ANIMATION NAME").setPosition(40, 220).setWidth(100).setAutoClear(false);
   wepImgSrc = cp5.addTextfield("WEAPON IMAGE PATH").setPosition(40, 180).setWidth(220).setAutoClear(false);
   wepImgSrc.setText("Should look like \"weapons/example_image.png\"");
@@ -142,25 +148,26 @@ void setup() {
   wepImgMountPoint = cp5.addTextfield("WEAPON MOUNT POINT (X, Y)").setPosition(140, 380).setWidth(30).setAutoClear(false);
   wepGlowSrc = cp5.addTextfield("CHARGE GLOW IMAGE PATH").setPosition(40, 420).setWidth(220).setAutoClear(false);
   wepGlowSrc.setText("Should look like \"weapons/example_glow.png\"");
+
   explosionSrc = cp5.addTextfield("EXPLOSION IMAGE PATH").setPosition(290, 180).setWidth(220).setAutoClear(false);
   explosionSrc.setText("Should look like \"effects/example_explosion.png\"");
   boostSrc = cp5.addTextfield("BOOST IMAGE PATH").setPosition(540, 180).setWidth(220).setAutoClear(false);
   boostSrc.setText("Should look like \"weapons/example_boost.png\"");
-  
+
   expName = cp5.addTextfield("EXPLOSION NAME").setPosition(290, 220).setWidth(100).setAutoClear(false);
   expTime = cp5.addTextfield("EXPLOSION TIME (SEC PER FRAME)").setPosition(400, 220).setWidth(30).setAutoClear(false);
   expW = cp5.addTextfield("EXPLOSION WIDTH").setPosition(290, 260).setWidth(30).setAutoClear(false);
   expH = cp5.addTextfield("EXPLOSION HEIGHT").setPosition(400, 260).setWidth(30).setAutoClear(false);
   expFW = cp5.addTextfield("EXPLOSION FRAME WIDTH").setPosition(290, 300).setWidth(30).setAutoClear(false);
   expFH = cp5.addTextfield("EXPLOSION FRAME HEIGHT").setPosition(400, 300).setWidth(30).setAutoClear(false);
-  
+
   boostName = cp5.addTextfield("BOOST NAME").setPosition(540, 220).setWidth(100).setAutoClear(false);
   boostTime = cp5.addTextfield("BOOST TIME (SEC PER FRAME)").setPosition(650, 220).setWidth(30).setAutoClear(false);
   boostW = cp5.addTextfield("BOOST WIDTH").setPosition(540, 260).setWidth(30).setAutoClear(false);
   boostH = cp5.addTextfield("BOOST HEIGHT").setPosition(650, 260).setWidth(30).setAutoClear(false);
   boostFW = cp5.addTextfield("BOOST FRAME WIDTH").setPosition(540, 300).setWidth(30).setAutoClear(false);
   boostFH = cp5.addTextfield("BOOST FRAME HEIGHT").setPosition(650, 300).setWidth(30).setAutoClear(false);
-  
+
   bulletSrc = cp5.addTextfield("PROJECTILE IMAGE PATH").setPosition(290, 380).setWidth(220).setAutoClear(false);
   bulletSrc.setText("Should look like \"weapons/example_bullet.png\"");
   bulletName = cp5.addTextfield("PROJECTILE NAME").setPosition(290, 420).setWidth(100).setAutoClear(false);
@@ -169,12 +176,16 @@ void setup() {
   bulletH = cp5.addTextfield("PROJECTILE HEIGHT").setPosition(400, 460).setWidth(30).setAutoClear(false);
   bulletFW = cp5.addTextfield("PROJECTILE FRAME WIDTH").setPosition(290, 500).setWidth(30).setAutoClear(false);
   bulletFH = cp5.addTextfield("PROJECTILE FRAME HEIGHT").setPosition(400, 500).setWidth(30).setAutoClear(false);
-  
+  projCount = cp5.addTextfield("PROJECTILE COUNT").setPosition(540, 410).setWidth(30).setAutoClear(false);
 
   imgChex = cp5.addCheckBox("image options").setPosition(40, 470).setSize(15, 15).setItemsPerRow(1).setSpacingColumn(90).setSpacingRow(10);
   imgChex.addItem("CHARGE GLOW IMAGE", 0);
   imgChex.addItem("BOOST IMAGE", 1);
   imgChex.addItem("CUSTOM EXPLOSION", 2);
+
+  projFake = cp5.addCheckBox("kek").setPosition(620, 410).setSize(15, 15).setItemsPerRow(1).setSpacingColumn(90).setSpacingRow(10);
+  projFake.addItem("FAKE", 0);
+
 
 
   /**
@@ -241,7 +252,14 @@ void setup() {
   bulletH.moveTo(images);
   bulletFW.moveTo(images);
   bulletFH.moveTo(images);
-
+  imgInc.moveTo(images);
+  imgDec.moveTo(images);
+  projIndex.moveTo(images);
+  addProj.moveTo(images);
+  delProj.moveTo(images);
+  projCount.moveTo(images);
+  projFake.moveTo(images);
+  projInfo.moveTo(images);
 
   setLock(addWep, true);
   setLock(beamLength, true);
@@ -282,6 +300,16 @@ void draw() {
 
     weapons.get(currentIndex).printXML();
     index.setText(Integer.toString(currentIndex+1));
+
+    if (weapons.get(currentIndex).projectiles.size() < 1) {
+      projIndex.setText("No projectiles");
+      projInfo.setText("No Projectiles Created");
+    } else {
+      projIndex.setText("Projectile " + (weapons.get(currentIndex).index+1));
+      projInfo.setText("Name: " + weapons.get(currentIndex).projectiles.get(weapons.get(currentIndex).index).animSheet.getString("name") + "\n" + 
+      "Path: " + weapons.get(currentIndex).projectiles.get(weapons.get(currentIndex).index).animSheet.getContent());
+    }
+
     String currName = weapons.get(currentIndex).weaponBlueprint.getString("name");
     String currType = weapons.get(currentIndex).weaponBlueprint.getChild("type").getContent();
     currWep.setText("Current Weapon Name: " + currName + "\n" + "Current Weapon Type: " + currType);
@@ -299,6 +327,18 @@ void draw() {
       setLock(chex.getItems().get(4), true);
       setLock(imgChex.getItems().get(2), true);
 
+      setLock(projCount, true);
+      setLock(projFake.getItems().get(0), true);
+      setLock(addProj, true);
+      setLock(delProj, true);
+      setLock(bulletSrc, true);
+      setLock(bulletName, true);
+      setLock(bulletTime, true);
+      setLock(bulletW, true);
+      setLock(bulletH, true);
+      setLock(bulletFW, true);
+      setLock(bulletFH, true);
+
       if (cp5.getTab("default").isActive()) {
         fill(red.getValue(), green.getValue(), blue.getValue());
         rect(280, 380, 10, 75);
@@ -310,11 +350,22 @@ void draw() {
         fill(100);
         rect(280, 380, 10, 75);
       }
-      
+
       setLock(chex.getItems().get(1), false);
       setLock(chex.getItems().get(2), false);
       setLock(chex.getItems().get(4), true);
       setLock(imgChex.getItems().get(2), false);
+      setLock(projCount, false);
+      setLock(projFake.getItems().get(0), false);
+      setLock(addProj, false);
+      setLock(delProj, false);
+      setLock(bulletSrc, false);
+      setLock(bulletName, false);
+      setLock(bulletTime, false);
+      setLock(bulletW, false);
+      setLock(bulletH, false);
+      setLock(bulletFW, false);
+      setLock(bulletFH, false);
     } else {
       setLock(shots, false);
       setLock(radius, true);
@@ -326,11 +377,22 @@ void draw() {
         fill(100);
         rect(280, 380, 10, 75);
       }
-      
+
       setLock(imgChex.getItems().get(2), false);
       setLock(chex.getItems().get(1), false);
       setLock(chex.getItems().get(2), false);
       setLock(chex.getItems().get(4), false);
+      setLock(projCount, true);
+      setLock(projFake.getItems().get(0), true);
+      setLock(addProj, false);
+      setLock(delProj, false);
+      setLock(bulletSrc, false);
+      setLock(bulletName, false);
+      setLock(bulletTime, false);
+      setLock(bulletW, false);
+      setLock(bulletH, false);
+      setLock(bulletFW, false);
+      setLock(bulletFH, false);
     }
 
     // Only enables stun duration field if stunChance > 1
@@ -342,10 +404,12 @@ void draw() {
 
     // Checks "Weapon Boost" checkbox to enable slider
     if (chex.getState(3)) {
+      setLock(chex.getItems().get(4), true);
       setLock(boost, false);
       setLock(amount, false);
       setLock(count, false);
     } else {
+      setLock(chex.getItems().get(4), false);
       setLock(boost, true);
       setLock(amount, true);
       setLock(count, true);
@@ -353,8 +417,10 @@ void draw() {
 
     // Check if the "Charge Levels" check box is toggled to enable chargeLevels slider
     if (chex.getState(4)) {
+      setLock(chex.getItems().get(3), true);
       setLock(chargeLevels, false);
     } else {
+      setLock(chex.getItems().get(3), false);
       setLock(chargeLevels, true);
     }
 
@@ -437,12 +503,33 @@ void controlEvent(ControlEvent e) {
   } else if (e.isFrom(applyXML)) {
     applyProperties();
   } else if (e.isFrom(saveXML) && weapons.size() > 0) {
+    saveXML(weapons.get(currentIndex).weaponBlueprint, modDir + "/blueprints.xml.append");
   } else if (e.isFrom(dec) && currentIndex > 0) {
     currentIndex--;
   } else if (e.isFrom(inc) && currentIndex < (weapons.size()-1)) {
     currentIndex++;
   } else if (e.isFrom(folder)) {
     selectFolder("Select your mod's directory...", "folderSelected");
+  } else if (e.isFrom(imgDec) && weapons.get(currentIndex).index > 0) {
+    weapons.get(currentIndex).index--;
+  } else if (e.isFrom(imgDec) && weapons.get(currentIndex).index < (weapons.size()-1)) {
+    weapons.get(currentIndex).index++;
+  } else if (e.isFrom(addProj)) {
+    if (!bulletName.getText().equals("") && (!bulletSrc.getText().equals("") || !bulletSrc.getText().equals("Should look like \"weapons/example_bullet.png\"")) && !bulletTime.getText().equals("") && !bulletW.getText().equals("") && !bulletH.getText().equals("") && !bulletFW.getText().equals("") && !bulletFH.getText().equals("")) {
+      if (weapons.get(currentIndex).weaponBlueprint.getChild("type").getContent().equals("BURST") && !projCount.getText().equals("")) {
+        weapons.get(currentIndex).projectiles.add(new Projectile(bulletName.getText(), bulletSrc.getText(), bulletW.getText(), bulletH.getText(), bulletFW.getText(), bulletFH.getText(), bulletTime.getText(), projCount.getText(), projFake.getState(0)));
+      } else if (weapons.get(currentIndex).projectiles.size() < 1) {
+        weapons.get(currentIndex).projectiles.add(new Projectile(bulletName.getText(), bulletSrc.getText(), bulletW.getText(), bulletH.getText(), bulletFW.getText(), bulletFH.getText(), bulletTime.getText(), projCount.getText(), projFake.getState(0)));
+      }
+    }
+    if (weapons.get(currentIndex).projectiles.size() > 1) {
+      weapons.get(currentIndex).index++;
+    }
+  } else if (e.isFrom(delProj) && weapons.get(currentIndex).projectiles.size() > 0) {
+    weapons.get(currentIndex).projectiles.remove(weapons.get(currentIndex).index);
+    if (weapons.get(currentIndex).index != 0) {
+      weapons.get(currentIndex).index--;
+    }
   }
 }
 
@@ -479,9 +566,15 @@ void applyProperties() {
     }
 
     weapons.get(currentIndex).setDamage(damage.getText());
-    weapons.get(currentIndex).setIon(ion.getText());
-    weapons.get(currentIndex).setPersDamage(persDamage.getText());
-    weapons.get(currentIndex).setSysDamage(sysDamage.getText());
+    if (!ion.getText().equals("")) {
+      weapons.get(currentIndex).setIon(ion.getText());
+    }
+    if (!persDamage.getText().equals("")) {
+      weapons.get(currentIndex).setPersDamage(persDamage.getText());
+    }
+    if (!sysDamage.getText().equals("")) {
+      weapons.get(currentIndex).setSysDamage(sysDamage.getText());
+    }
     weapons.get(currentIndex).setMissiles(missiles.getText());
 
     if (stunChance.getValue() > 0) {
@@ -504,12 +597,19 @@ void applyProperties() {
     weapons.get(currentIndex).setCost(cost.getText());   
 
     weapons.get(currentIndex).setSP((int)sp.getValue());
-    weapons.get(currentIndex).setFireChance(fireChance.getValue());
-    weapons.get(currentIndex).setBreachChance(breachChance.getValue());
-    weapons.get(currentIndex).setStunChance(stunChance.getValue());
+    if (fireChance.getValue() != 0) {
+      weapons.get(currentIndex).setFireChance(fireChance.getValue());
+    }
+    if (breachChance.getValue() != 0) {
+      weapons.get(currentIndex).setBreachChance(breachChance.getValue());
+    }
+    if (stunChance.getValue() != 0) {
+      weapons.get(currentIndex).setStunChance(stunChance.getValue());
+    }
     weapons.get(currentIndex).setPower((int)power.getValue());
     weapons.get(currentIndex).setRarity((int)rarity.getValue());
-    if (chex.getState(4)) {
+
+    if (chex.getState(4) && chex.getItems().get(3).isLock()) {
       weapons.get(currentIndex).setChargeLevels((int)chargeLevels.getValue());
     }
 
@@ -517,7 +617,7 @@ void applyProperties() {
     weapons.get(currentIndex).setDroneTargetable(chex.getState(1));
     weapons.get(currentIndex).setLockdown(chex.getState(2));
 
-    if (chex.getState(3) && !boost.getLabel().equals("BOOST TYPE")) {
+    if (chex.getState(3) && !boost.getLabel().equals("BOOST TYPE") && chex.getItems().get(4).isLock()) {
       weapons.get(currentIndex).setBoost(boost.getLabel(), amount.getText(), count.getText());
     }
   }

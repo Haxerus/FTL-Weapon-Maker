@@ -1,27 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<weaponBlueprint name="meme">
-  <type>BEAM</type>
-  <title>Meme Beam</title>
-  <short>Meme</short>
-  <desc>Meme</desc>
-  <tooltip>Meme</tooltip>
+<weaponBlueprint name="EXAMPLE">
+  <type>LASER</type>
+  <title>a</title>
+  <short>a</short>
+  <desc>a</desc>
+  <tooltip>a</tooltip>
+  <flavorType>a</flavorType>
   <damage>1</damage>
   <ion>0</ion>
-  <persDamage>0</persDamage>
-  <sysDamage>0</sysDamage>
+  <persDamage>10</persDamage>
+  <sysDamage>1</sysDamage>
   <missiles>0</missiles>
-  <stun>16</stun>
-  <cooldown>15</cooldown>
-  <length>19</length>
-  <speed>15</speed>
-  <cost>120</cost>
-  <sp>3</sp>
-  <fireChance>4.0</fireChance>
-  <breachChance>8.0</breachChance>
-  <stunChance>6.0</stunChance>
-  <power>2</power>
-  <rarity>4</rarity>
+  <stun>100</stun>
+  <cooldown>5</cooldown>
+  <shots>1</shots>
+  <speed>60</speed>
+  <cost>0</cost>
+  <sp>5</sp>
+  <fireChance>0.0</fireChance>
+  <breachChance>1.0</breachChance>
+  <stunChance>10.0</stunChance>
+  <power>0</power>
+  <rarity>1</rarity>
+  <chargeLevels>4</chargeLevels>
   <hullBust>0</hullBust>
-  <drone_targetable>0</drone_targetable>
-  <lockdown>0</lockdown>
+  <drone_targetable>1</drone_targetable>
+  <lockdown>1</lockdown>
+  <boost>
+    <type>damage</type>
+    <amount>1</amount>
+    <count>3</count>
+  </boost>
+  <launchSounds>
+		<sound>ionShoot1</sound>
+		<sound>ionShoot2</sound>
+		<sound>ionShoot3</sound>
+	</launchSounds>
+	<hitShipSounds>
+		<sound>ionHit1</sound>
+		<sound>ionHit2</sound>
+		<sound>ionHit3</sound>
+	</hitShipSounds>
+	<hitShieldSounds>
+		<sound>ionShields1</sound>
+		<sound>ionShields2</sound>
+		<sound>ionShields3</sound>
+	</hitShieldSounds>
+	<missSounds>
+		<sound>miss</sound>
+	</missSounds>
+  <image>ion_spray_shot</image>
+	<weaponArt>ion_spray</weaponArt>
 </weaponBlueprint>
